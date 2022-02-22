@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphiQL</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/graphiql@1.4.2/graphiql.min.css">
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/graphiql@1.4.2/graphiql.min.js"></script>
+<script>
+    var url = localStorage.getItem('url')
+    var token = localStorage.getItem('token')
+    ReactDOM.render(React.createElement(GraphiQL, {
+        fetcher: function (query) {
+            var headers = {}
+            if(token) {
+                headers['Authorization'] = 'Bearer ' + token
+            }
+            return fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(query),
+                headers: {
+                    authorization: 'Bearer ' + token
+                }
+            }).then(function (res) {
+                return res.json()
+            }).then(function (data) {
+                return data
+            })
+        }
+    }), document.getElementById('root'))
+</script>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    #root {
+        height: 100vh;
+    }
+</style>
+
+</html>
